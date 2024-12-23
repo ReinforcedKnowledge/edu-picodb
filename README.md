@@ -6,15 +6,6 @@ It allows users to create and manipulate simple database files with custom-defin
 
 It operates on simple binary files, storing data according to a custom-defined schema. The focus is on exploring C features, such as pointers, memory management, file I/O, unions, enums, and more.
 
-## Table of content
-- [Project objective and introduction](#introduction)
-- [Chapter 1:](#chapter-1)
-  - [Project structure](#project-structure)
-  - [Makefile](#makefile)
-  - [Some GCC options and usage](#some-gcc-options-and-usage)
-  - [Command line parsing](#command-line-parsing)
-- [Chapter 2: File operation and function design](#chapter-2)
-
 ## Introduction
 
 ### Why This Project?
@@ -32,6 +23,13 @@ Please understand that this project, won't make you a C expert or advanced C dev
 And if you're already an expert in C, I don't think there is anything you can learn from this, but I'd love to learn from you. So if you could give a quick peek here and there and give me some advice and recommendations, I'd be really thankful!
 
 This project assumes you're familiar with C syntax and the compilation process.
+
+## Table of content
+- [Project objective and introduction](#introduction)
+- [Chapter 1:](./chapters/chapter_1.md)
+  - Project structure
+  - Makefile
+  - Some GCC options and usage
 
 ### Command-Line Options
 
@@ -71,38 +69,3 @@ Please note that many limitations exist—there is no support for updating or de
 - The header is quite simple.
 
 These limits are due to this being a school project which I'm revisiting to augment with what I learned after using C professionnally.
-
-## Chapter 1
-
-### Project Structure
-
-As with every project, having some kind of structure and organization is a must, to keep things manageable and modular. Here we're going with a typical C project structure, meaning:
-- `src`: a directory for the source code, will contain all of our `.c` files.
-- `include`: a directory for the header files `.h`, we call it include because we include them in the source code. These files contain function declarations, type definitions and constants. You don't have to declare every implemented function or type definition or constant, only those you want to share. If in some source file you're using an auxiliary function that's not needed to be exposed to other parts of your program, then you might not include it in the header files.
-- `build`: a directory for the build artifacts, in our case it'll only be `.o` files which are the result of an intermediary step before linking them all together into the final executable. It's a good practice to have this so that you do incremental builds and only recompile the files that changed.
-- `bin`: a directory to store the executable file (or files). It's just good practice to separate the executables from the source code and keep the repository clean.
-
-We'll also have a `Makefile`, which is a file that defines how the project is built. 
-
-Initially this looks like:
-```
-.
-├── LICENSE
-├── Makefile
-├── README.md
-├── bin
-├── build
-├── include
-└── src
-    └── main.c
-```
-
-### Makefile
-
-### Some GCC options and usage
-
-### Command Line Parsing
-
-## Chapter 2
-
-1 - First thing I got to learn is to store strings' lengths!
