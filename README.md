@@ -30,6 +30,14 @@ This project assumes you're familiar with C syntax and the compilation process.
   - Project structure
   - Makefile
   - Some GCC options and usage
+- [Chapter 2:](./chapters/chapter_2.md)
+  - Command Line Parsing
+  - Getopt
+  - Some Notes about the Code
+  - Switch Statement
+  - Other Tidbits of Information
+    - fprintf
+    - Strings, arrays and pointers
 
 ### Command-Line Options
 
