@@ -1,4 +1,4 @@
-# Chapter 1
+# Chapter 2
 
 ## Table of content
   - [Command Line Parsing](#comamnd-line-parsing)
