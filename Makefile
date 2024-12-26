@@ -22,6 +22,6 @@ clean:
 	rm -rf $(OBJS) $(TARGET)
 
 run: $(TARGET)
-	./$(TARGET) -f filename -n -s "(my_col1:int _my_col:float mycol:string)" -a "(123 && 1.4 && Hello world!)"
+	./$(TARGET) -f test_file -n -s "(my_col1:int _my_col:float mycol:string)" -a "(123 && 1.4 && Hello world!)"
 
 all: clean run

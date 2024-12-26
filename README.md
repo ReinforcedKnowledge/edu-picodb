@@ -38,6 +38,13 @@ This project assumes you're familiar with C syntax and the compilation process.
   - Other Tidbits of Information
     - fprintf
     - Strings, arrays and pointers
+- [Chapter 3:](./chapters/chapter_3.md)
+  - File Descriptors
+  - `open` syscall
+  - O_CREAT and O_EXCL
+  - errno
+  - Function Pattern
+  - Some Things to be Aware of
 
 ### Command-Line Options
 
