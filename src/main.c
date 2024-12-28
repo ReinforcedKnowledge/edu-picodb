@@ -2,6 +2,7 @@
 #include <unistd.h>
 
 #include "file.h"
+#include "schema.h"
 
 
 int main(int argc, char *argv[]) {
@@ -69,7 +70,28 @@ int main(int argc, char *argv[]) {
     }
 
     if (schema) {
-        // Placeholder
+        SchemaOpStatus sop_status;
+        column_t *columns = NULL;
+        size_t allocated_columns;
+        sop_status = parse_schema(schema, &columns, &allocated_columns);
+
+        if (sop_status != SCHEMA_OP_SUCCESS) {
+            switch (sop_status) {
+                case SCHEMA_OP_ERROR_INVALID_ARG:
+                    fprintf(stderr, "The provided schema is malformatted.\n");
+                    break;
+                case SCHEMA_OP_ERROR_MEMORY_ALLOCATION:
+                    fprintf(stderr, "Couldn't allocate memory when parsing the schema.\n");
+                    break;
+                default:
+                    fprintf(stderr, "An unknown error occurred when parsing the schema.\n");
+                    break;
+            }
+            return -1;
+        }
+
+        printf("Parsed schema:\n\n");
+        print_parsed_schema(columns, allocated_columns);
     }
 
     if (row) {
