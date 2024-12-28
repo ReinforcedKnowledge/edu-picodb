@@ -64,6 +64,15 @@ This project assumes you're familiar with C syntax and the compilation process.
       - `mmap`
       - Memory Allocation Arenas
       - Your own memory allocator
+- [Chapter 5:](./chapters/chapter_5.md)
+  - Header
+  - Some Notes about the Code
+  - Additional robustness when dealing with files
+    - Better header
+    - Partial reads and writes
+    - Endianness
+    - `fsync`
+    - Multithreading
 
 
 ### Command-Line Options
