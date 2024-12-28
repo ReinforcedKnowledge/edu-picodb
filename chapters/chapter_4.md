@@ -1,12 +1,24 @@
 # Chapter 4
 
 ## Table of content
-  - [Schema Parsing](#schema-parsing)
+  - [Challenges in Schema Parsing](#challenges-in-schema-parsing)
     - [Arbitrary long input schema](#arbitrary-long-input-schema)
     - [Input schema not null-terminated](#input-schema-not-null-terminated)
-    - [Integer Overflow and size_t](#integer-overflow-and-size_t)
+    - [Overflow and size_t](#overflow-and-size_t)
+    - [Fixed-width types](#fixed-width-types)
+    - [Typedef, what it can and cannot do](#typedef-what-it-can-and-cannot-do)
+    - [Some Notes about the Code](#some-notes-about-the-code)
   - [Dynamic Memory Allocation](#dynamic-memory-allocation)
-  - [Cleanup](#cleanup)
+    - [C memory model](#c-memory-model)
+    - [Fellowship of the `malloc`](#fellowship-of-the-malloc)
+    - [Common Mistakes and Advice](#common-mistakes-and-advice)
+    - [Some advanced topics](#some-advanced-topics)
+      - [Heap fragmentation](#heap-fragmentation)
+      - [Allocator Strategies](#allocator-strategies)
+      - [Optimistic Memory Allocation (Linux)](#optimistic-memory-allocation-linux)
+      - [`mmap`](#mmap)
+      - [Memory Allocation Arenas](#memory-allocation-arenas)
+      - [Your own memory allocator](#your-own-memory-allocator)
   
 
 ## Challenges in Schema Parsing

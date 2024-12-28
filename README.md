@@ -45,6 +45,26 @@ This project assumes you're familiar with C syntax and the compilation process.
   - errno
   - Function Pattern
   - Some Things to be Aware of
+- [Chapter 4:](./chapters/chapter_4.md)
+   - Challenges in Schema Parsing
+      - Arbitrary long input schema
+      - Input schema not null-terminated
+      - Overflow and size_t
+      - Fixed-width types
+      - Typedef, what it can and cannot do
+      - Some Notes about the Code
+   - Dynamic Memory Allocation
+      - C memory model
+      - Fellowship of the `malloc`
+      - Common Mistakes and Advice
+      - Some advanced topics
+      - Heap fragmentation
+      - Allocator Strategies
+      - Optimistic Memory Allocation (Linux)
+      - `mmap`
+      - Memory Allocation Arenas
+      - Your own memory allocator
+
 
 ### Command-Line Options
 
