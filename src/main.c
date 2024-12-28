@@ -3,6 +3,7 @@
 
 #include "file.h"
 #include "schema.h"
+#include "header.h"
 
 
 int main(int argc, char *argv[]) {
@@ -69,7 +70,16 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    if (schema) {
+    if (schema && !newfile) {
+        printf("You can't specify a new schema for an already existing file.\n");
+        if (close(fd) == -1) {
+            fprintf(stderr, "Failed to close the file..\n");
+        }
+        return -1;
+    }
+
+    if (schema && newfile) {
+        // Schema parsing
         SchemaOpStatus sop_status;
         column_t *columns = NULL;
         size_t allocated_columns;
@@ -92,14 +102,95 @@ int main(int argc, char *argv[]) {
 
         printf("Parsed schema:\n\n");
         print_parsed_schema(columns, allocated_columns);
+
+        // Header initialization
+        HeaderOpStatus hop_status;
+        header_t header;
+        hop_status = initialize_header(columns, allocated_columns, &header);
+        if (hop_status != HEADER_OP_SUCCESS) {
+            fprintf(stderr, "Failed to initialize header: invalid columns argument.\n");
+            free_columns(columns, allocated_columns);
+            if (close(fd) == -1) {
+                fprintf(stderr, "Failed to close the file..\n");
+            }
+            return -1;
+        }
+
+        // Header writing
+        hop_status = write_header(fd, header);
+        if (hop_status != HEADER_OP_SUCCESS) {
+            fprintf(stderr, "Failed to write header.\n");
+            free_columns(columns, allocated_columns);
+            if (close(fd) == -1) {
+                fprintf(stderr, "Failed to close the file..\n");
+            }
+            return -1;
+        }
+
+        printf("Header to write:\n\n");
+        print_header(header);
+
+
+        // Test that our header was written correctly
+#ifdef VERIFY_HEADER
+        if (lseek(fd, 0, SEEK_SET) == -1) {
+            fprintf(stderr, "Failed to seek in file.\n");
+            free_columns(columns, allocated_columns);
+            if (close(fd) == -1) {
+                fprintf(stderr, "File closing failed.\n");
+            }
+            return -1;
+        }
+
+        header_t rheader;
+        hop_status = read_header(fd, &rheader);
+        if (hop_status != HEADER_OP_SUCCESS) {
+            fprintf(stderr, "Failed to read header.\n");
+            free_columns(columns, allocated_columns);
+            if (close(fd) == -1) {
+                fprintf(stderr, "File closing failed.\n");
+            }
+            return -1;
+        }
+
+        printf("Read header:\n\n");
+        print_header(rheader);
+
+        free_columns(rheader.columns, rheader.num_cols);
+#endif /* VERIFY_HEADER */
+
+        if (row) {
+            // Append row
+        }
+
+        free_columns(columns, allocated_columns);
     }
 
-    if (row) {
-        // Placeholder
+    if (!schema && !newfile) {
+        if (row) {
+            // Read header
+            HeaderOpStatus hop_status;
+            header_t header;
+            hop_status = read_header(fd, &header);
+            if (hop_status != HEADER_OP_SUCCESS) {
+                fprintf(stderr, "Failed to read header.\n");
+                if (close(fd) == -1) {
+                    fprintf(stderr, "File closing failed.\n");
+                }
+                return -1;
+            }
+
+            printf("Read header:\n\n");
+            print_header(header);
+
+            // Append row
+
+            free_columns(header.columns, header.num_cols);
+        }
     }
 
     if (close(fd) == -1) {
-        fprintf(stderr, "File closing failed.\n");
+        fprintf(stderr, "Failed to close the file.\n");
         return -1;
     }
 

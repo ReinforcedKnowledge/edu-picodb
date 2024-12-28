@@ -25,3 +25,7 @@ run: $(TARGET)
 	./$(TARGET) -f test_file -n -s "(my_col1:int _my_col:float mycol:string)" -a "(123 && 1.4 && Hello world!)"
 
 all: clean run
+
+all-verify: clean
+	@echo "Compiling with VERIFY_HEADER"
+	$(MAKE) CFLAGS="$(CFLAGS) -DVERIFY_HEADER" all
