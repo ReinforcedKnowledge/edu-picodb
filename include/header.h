@@ -33,5 +33,6 @@ HeaderOpStatus initialize_header(column_t *columns, size_t num_cols, header_t *h
 HeaderOpStatus write_columns(int fd, column_t *columns, size_t num_cols);
 HeaderOpStatus write_header(int fd, header_t header);
 HeaderOpStatus read_header(int fd, header_t *header);
+HeaderOpStatus update_header_num_rows(int fd, size_t increment, header_t *header);
 
 #endif

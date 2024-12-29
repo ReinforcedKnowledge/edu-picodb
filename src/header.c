@@ -119,6 +119,7 @@ HeaderOpStatus read_columns(int fd, size_t num_cols, column_t **columns_out) {
         }
         bytes_read = read(fd, columns[i].name, sizeof(char) * columns[i].name_length);
         if (bytes_read < 0) {
+            free_columns(columns, i);
             return HEADER_READ_ERROR;
         }
         if ((size_t)bytes_read != sizeof(char) * columns[i].name_length) {
