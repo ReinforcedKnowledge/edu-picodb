@@ -73,6 +73,16 @@ This project assumes you're familiar with C syntax and the compilation process.
     - Endianness
     - `fsync`
     - Multithreading
+- [Chapter 6:](./chapters/chapter_6.md)
+  - Appending Rows
+  - Struct Packing
+    - Structures and Unions
+      - Struct Generalities and Flexible Array
+      - Struct Layout and Padding
+      - Struct Packing
+    - WIP: Union
+    - WIP: Bitfield
+  - WIP: Pointers to pointers
 
 
 ### Command-Line Options

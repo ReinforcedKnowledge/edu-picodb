@@ -4,6 +4,7 @@
 #include "file.h"
 #include "schema.h"
 #include "header.h"
+#include "append.h"
 
 
 int main(int argc, char *argv[]) {
@@ -157,7 +158,7 @@ int main(int argc, char *argv[]) {
         print_header(rheader);
 
         free_columns(rheader.columns, rheader.num_cols);
-#endif /* VERIFY_HEADER */
+#endif // VERIFY_HEADER
 
         if (row) {
             // Append row
@@ -183,9 +184,103 @@ int main(int argc, char *argv[]) {
             printf("Read header:\n\n");
             print_header(header);
 
-            // Append row
+            // Parse the row
+            AppendOpStatus aop_status;
+            row_t parsed_row;
+            aop_status = parse_row(header, row, &parsed_row);
+            if (aop_status != APPEND_OP_SUCCESS) {
+                fprintf(stderr, "Failed to parse row.\n");
+                free_columns(header.columns, header.num_cols);
+                if (close(fd) == -1) {
+                    fprintf(stderr, "File closing failed.\n");
+                }
+                return -1;
+            }
 
+            printf("Parsed row:\n\n");
+            print_parsed_row(parsed_row, parsed_row.num_cells);
+
+            // For safety, let's get to the end of the file, should have used O_APPEND...
+            if (lseek(fd, 0, SEEK_END) == -1) {
+                fprintf(stderr, "Failed to seek to end of file.\n");
+                free_row(&parsed_row, parsed_row.num_cells);
+                free_columns(header.columns, header.num_cols);
+                if (close(fd) == -1) {
+                    fprintf(stderr, "File closing failed.\n");
+                }
+                return -1;
+            }
+
+            // Write row
+            aop_status = write_row(fd, parsed_row);
+            if (aop_status != APPEND_OP_SUCCESS) {
+                fprintf(stderr, "Failed to write row.\n");
+                free_row(&parsed_row, parsed_row.num_cells);
+                free_columns(header.columns, header.num_cols);
+                if (close(fd) == -1) {
+                    fprintf(stderr, "File closing failed.\n");
+                }
+                return -1;
+            }
+
+            // Update the header: both in-memory and also on disk.
+            HeaderOpStatus huop_status;
+            huop_status = update_header_num_rows(fd, 1, &header);
+            if (huop_status != HEADER_OP_SUCCESS) {
+                fprintf(stderr, "Failed to update the header.\n");
+                free_row(&parsed_row, parsed_row.num_cells);
+                free_columns(header.columns, header.num_cols);
+                if (close(fd) == -1) {
+                    fprintf(stderr, "File closing failed.\n");
+                }
+                return -1;
+            }
+
+            free_row(&parsed_row, parsed_row.num_cells);
             free_columns(header.columns, header.num_cols);
+
+#ifdef VERIFY_ROW
+            // Seek to start of file to read the header and the first row
+            if (lseek(fd, 0, SEEK_SET) == -1) {
+                fprintf(stderr, "Failed to seek in file.\n");
+                if (close(fd) == -1) {
+                    fprintf(stderr, "File closing failed.\n");
+                }
+                return -1;
+            }
+
+            // Read the header
+            header_t verify_row_header;
+            HeaderOpStatus verify_row_hop_status = read_header(fd, &verify_row_header);
+            if (verify_row_hop_status != HEADER_OP_SUCCESS) {
+                fprintf(stderr, "Failed to read header when verifying row.\n");
+                free_row(&parsed_row, parsed_row.num_cells);
+                free_columns(header.columns, header.num_cols);
+                if (close(fd) == -1) {
+                    fprintf(stderr, "File closing failed.\n");
+                }
+                return -1;
+            }
+
+            // Read the first row
+            row_t first_row;
+            AppendOpStatus aop_read_first_row_status = read_row(fd, verify_row_header, &first_row);
+            if (aop_read_first_row_status != APPEND_OP_SUCCESS) {
+                fprintf(stderr, "Failed to read row for verification.\n");
+                free_row(&parsed_row, parsed_row.num_cells);
+                free_columns(verify_row_header.columns, verify_row_header.num_cols);
+                if (close(fd) == -1) {
+                    fprintf(stderr, "File closing failed.\n");
+                }
+                return -1;
+            }
+
+            printf("Verified first row from file:\n\n");
+            print_parsed_row(first_row, first_row.num_cells);
+
+            free_row(&first_row, first_row.num_cells);
+            free_columns(verify_row_header.columns, verify_row_header.num_cols);
+#endif // VERIFY_ROW
         }
     }
 

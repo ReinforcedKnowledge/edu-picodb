@@ -22,10 +22,15 @@ clean:
 	rm -rf $(OBJS) $(TARGET)
 
 run: $(TARGET)
-	./$(TARGET) -f test_file -n -s "(my_col1:int _my_col:float mycol:string)" -a "(123 && 1.4 && Hello world!)"
+	./$(TARGET) -f test_file -n -s "(my_col1:int _my_col:float mycol:string)"
+	./$(TARGET) -f test_file -a "(123 && 1.4 && Hello world!)"
 
 all: clean run
 
 all-verify: clean
 	@echo "Compiling with VERIFY_HEADER"
 	$(MAKE) CFLAGS="$(CFLAGS) -DVERIFY_HEADER" all
+
+verify-row: clean
+	@echo "Compiling with VERIFY_ROW"
+	$(MAKE) CFLAGS="$(CFLAGS) -DVERIFY_ROW" all
